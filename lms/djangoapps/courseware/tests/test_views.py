@@ -12,6 +12,9 @@ from urllib.parse import quote, urlencode
 from uuid import uuid4
 
 import ddt
+import pytz
+from django.utils import timezone
+
 from capa.tests.response_xml_factory import MultipleChoiceResponseXMLFactory
 from completion.test_utils import CompletionWaffleTestMixin
 from crum import set_current_request
@@ -819,7 +822,7 @@ class ViewsTestCase(BaseViewsTestCase):
                     'location': str(usage_key),
                 })
                 response = client.get(url)
-                expected_time = datetime.now() + timedelta(hours=hour_diff)
+                expected_time = timezone.now() + timedelta(hours=hour_diff)
                 expected_tz = expected_time.strftime('%Z')
                 self.assertContains(response, expected_tz)
                 self.assertContains(response, str(expected_time))
@@ -1264,8 +1267,8 @@ class ProgressPageBaseTests(ModuleStoreTestCase):
     def create_course(self, **options):
         """Create the test course."""
         self.course = CourseFactory.create(  # pylint: disable=attribute-defined-outside-init
-            start=datetime(2013, 9, 16, 7, 17, 28),
-            end=datetime.now(),
+            start=datetime(2013, 9, 16, 7, 17, 28,tzinfo=pytz.UTC),
+            end=timezone.now(),
             certificate_available_date=datetime.now(UTC),
             certificates_display_behavior=CertificatesDisplayBehaviors.END_WITH_DATE,
             **options,
@@ -2264,7 +2267,7 @@ class GenerateUserCertTests(ModuleStoreTestCase):
         self.course = CourseFactory.create(
             org='edx',
             number='verified',
-            end=datetime.now(),
+            end=timezone.now(),
             display_name='Verified Course',
             grading_policy={'GRADE_CUTOFFS': {'cutoff': 0.75, 'Pass': 0.5}},
             self_paced=True,
@@ -3022,7 +3025,7 @@ class TestRenderPublicVideoXBlock(ModuleStoreTestCase):
         Helper method to create the course.
         """
         with self.store.default_store(self.store.default_modulestore.get_modulestore_type()):
-            course = CourseFactory.create(**{'start': datetime.now() - timedelta(days=1)})
+            course = CourseFactory.create(**{'start': timezone.now() - timedelta(days=1)})
             chapter = ItemFactory.create(parent=course, category='chapter')
             vertical_block = ItemFactory.create(
                 parent_location=chapter.location,

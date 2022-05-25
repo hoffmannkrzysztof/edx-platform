@@ -9,6 +9,7 @@ import dateutil
 import ddt
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.timezone import now
 from edx_toggles.toggles.testutils import override_waffle_flag
 from pytz import UTC
@@ -211,7 +212,7 @@ class ProgressTabTestViews(BaseCourseHomeTests):
                 "earned_graded": 6.0,
                 "possible_graded": 8.0,
                 "visible_blocks": [],
-                "first_attempted": datetime.now(),
+                "first_attempted": timezone.now(),
             }
 
             created_grade = PersistentSubsectionGrade.update_or_create_grade(**params)

@@ -8,6 +8,7 @@ from unittest.mock import Mock, call, patch
 import json
 import ddt
 import httpretty
+import pytz
 from django.test.utils import override_settings
 from lazy.lazy import lazy  # lint-amnesty, pylint: disable=no-name-in-module
 
@@ -51,8 +52,8 @@ class BadgrBackendTestCase(ModuleStoreTestCase, EventTrackingTestCase):
         # Need key to be deterministic to test slugs.
         self.course = CourseFactory.create(
             org='edX', course='course_test', run='test_run', display_name='Badged',
-            start=datetime.datetime(year=2015, month=5, day=19),
-            end=datetime.datetime(year=2015, month=5, day=20)
+            start=datetime.datetime(year=2015, month=5, day=19, tzinfo=pytz.utc),
+            end=datetime.datetime(year=2015, month=5, day=20, tzinfo=pytz.utc)
         )
         self.user = UserFactory.create(email='example@example.com')
         CourseEnrollmentFactory.create(user=self.user, course_id=self.course.location.course_key, mode='honor')

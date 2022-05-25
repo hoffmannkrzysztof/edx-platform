@@ -88,6 +88,7 @@ from openedx.core.djangoapps.site_configuration import helpers as configuration_
 from openedx.core.djangoapps.xmodule_django.models import NoneToEmptyManager
 from openedx.core.djangolib.model_mixins import DeletableByUserValue
 from openedx.core.toggles import ENTRANCE_EXAMS
+from django.utils import timezone
 
 log = logging.getLogger(__name__)
 AUDIT_LOG = logging.getLogger("audit")
@@ -906,7 +907,7 @@ class Registration(models.Model):
     def activate(self):  # lint-amnesty, pylint: disable=missing-function-docstring
         self.user.is_active = True
         self.user.save(update_fields=['is_active'])
-        self.activation_timestamp = datetime.utcnow()
+        self.activation_timestamp = timezone.now()
         self.save()
         USER_ACCOUNT_ACTIVATED.send_robust(self.__class__, user=self.user)
         log.info('User %s (%s) account is successfully activated.', self.user.username, self.user.email)
@@ -3341,7 +3342,7 @@ class UserCelebration(TimeStampedModel):
         from lms.djangoapps.courseware.context_processor import user_timezone_locale_prefs
         user_timezone_locale = user_timezone_locale_prefs(crum.get_current_request())
         user_timezone = timezone(user_timezone_locale['user_timezone'] or browser_timezone or str(UTC))
-        return user_timezone.localize(datetime.now())
+        return user_timezone.localize(timezone.now())
 
     def _calculate_streak_updates(self, today):
         """ Calculate the updates that should be applied to the streak fields of the provided celebration

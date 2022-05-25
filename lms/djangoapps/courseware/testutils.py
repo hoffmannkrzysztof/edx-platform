@@ -9,6 +9,7 @@ from unittest.mock import patch
 from urllib.parse import urlencode
 
 import ddt
+from django.utils import timezone
 
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from lms.djangoapps.courseware.tests.helpers import set_preview_mode
@@ -90,7 +91,7 @@ class RenderXBlockTestMixin(MasqueradeMixin, metaclass=ABCMeta):
         subclasses.
         """
         return {
-            'start': datetime.now() - timedelta(days=1)
+            'start': timezone.now() - timedelta(days=1)
         }
 
     def setup_course(self, default_store=None):

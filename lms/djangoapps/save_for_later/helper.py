@@ -3,14 +3,14 @@ helper functions
 """
 
 import logging
-from datetime import datetime
-from django.conf import settings
+
 from braze.client import BrazeClient
+from django.conf import settings
+from django.utils import timezone
 from eventtracking import tracker
 
-from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
-
 from common.djangoapps.course_modes.models import CourseMode
+from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def _get_event_properties(data):
     """
     lms_url = configuration_helpers.get_value('LMS_ROOT_URL', settings.LMS_ROOT_URL)
     event_properties = {
-        'time': datetime.now().isoformat(),
+        'time': timezone.now().isoformat(),
         'name': data.get('braze_event'),
     }
 

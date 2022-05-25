@@ -17,6 +17,7 @@ from django.conf import settings
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 from django.urls import reverse
+from django.utils import timezone
 from opaque_keys.edx.keys import CourseKey
 from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import _get_modulestore_branch_setting, modulestore
@@ -452,8 +453,8 @@ class TestGetCourseAssignments(CompletionWaffleTestMixin, ModuleStoreTestCase):
         Test that we treat a sequential with incomplete (but not scored) items (like a video maybe) as complete.
         """
         course = CourseFactory()
-        chapter = ItemFactory(parent=course, category='chapter', graded=True, due=datetime.datetime.now(),
-                              start=datetime.datetime.now() - datetime.timedelta(hours=1))
+        chapter = ItemFactory(parent=course, category='chapter', graded=True, due=timezone.now(),
+                              start=timezone.now() - datetime.timedelta(hours=1))
         sequential = ItemFactory(parent=chapter, category='sequential')
         problem = ItemFactory(parent=sequential, category='problem', has_score=True)
         ItemFactory(parent=sequential, category='video', has_score=False)
@@ -472,7 +473,7 @@ class TestGetCourseAssignments(CompletionWaffleTestMixin, ModuleStoreTestCase):
         This can happen with unreleased assignments, for example (start date in future).
         """
         course = CourseFactory()
-        chapter = ItemFactory(parent=course, category='chapter', graded=True, due=datetime.datetime.now())
+        chapter = ItemFactory(parent=course, category='chapter', graded=True, due=timezone.now())
         ItemFactory(parent=chapter, category='sequential')
 
         assignments = get_course_assignments(course.location.context_key, self.user, None)
@@ -485,8 +486,8 @@ class TestGetCourseAssignments(CompletionWaffleTestMixin, ModuleStoreTestCase):
         """
         course = CourseFactory()
         chapter = ItemFactory(parent=course, category='chapter', graded=True,
-                              due=datetime.datetime.now() + datetime.timedelta(hours=2),
-                              start=datetime.datetime.now() + datetime.timedelta(hours=1))
+                              due=timezone.now() + datetime.timedelta(hours=2),
+                              start=timezone.now() + datetime.timedelta(hours=1))
         sequential = ItemFactory(parent=chapter, category='sequential')
         problem = ItemFactory(parent=sequential, category='problem', has_score=True)
         ItemFactory(parent=sequential, category='video', has_score=False)

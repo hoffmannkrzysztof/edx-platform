@@ -3636,7 +3636,7 @@ class TestInstructorAPITaskLists(SharedModuleStoreTestCase, LoginEnrollmentTestC
             for feature in self.FEATURES:
                 setattr(self, feature, 'expected')
             # created needs to be a datetime
-            self.created = datetime.datetime(2013, 10, 25, 11, 42, 35)
+            self.created = datetime.datetime(2013, 10, 25, 11, 42, 35, tzinfo=pytz.utc)
             # set 'status' and 'task_message' attrs
             success, task_message = completion()
             if success:

@@ -2,18 +2,16 @@
 Tests for the course import API views
 """
 
-
-from datetime import datetime
-
 from django.test.utils import override_settings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
-from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
-from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 
 from common.djangoapps.student.tests.factories import StaffFactory
 from common.djangoapps.student.tests.factories import UserFactory
+from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
+from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 
 
 @override_settings(PROCTORING_BACKENDS={'DEFAULT': 'proctortrack', 'proctortrack': {}})
@@ -44,7 +42,7 @@ class CourseValidationViewTest(SharedModuleStoreTestCase, APITestCase):
         """
         Sets up test course structure.
         """
-        course.start = datetime.now()
+        course.start = timezone.now()
         course.self_paced = True
         cls.store.update_item(course, cls.staff.id)
 

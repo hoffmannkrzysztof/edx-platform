@@ -6,6 +6,7 @@ Tests for branding page
 import datetime
 from unittest.mock import Mock, patch
 
+import pytz
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponseRedirect
@@ -151,10 +152,10 @@ class PreRequisiteCourseCatalog(ModuleStoreTestCase, LoginEnrollmentTestCase, Mi
             course='1000',
             display_name='course that has pre requisite',
             # closed enrollment
-            enrollment_start=datetime.datetime(2013, 1, 1),
-            enrollment_end=datetime.datetime(2014, 1, 1),
-            start=datetime.datetime(2013, 1, 1),
-            end=datetime.datetime(2030, 1, 1),
+            enrollment_start=datetime.datetime(2013, 1, 1, tzinfo=pytz.utc),
+            enrollment_end=datetime.datetime(2014, 1, 1, tzinfo=pytz.utc),
+            start=datetime.datetime(2013, 1, 1, tzinfo=pytz.utc),
+            end=datetime.datetime(2030, 1, 1, tzinfo=pytz.utc),
             pre_requisite_courses=pre_requisite_courses,
             emit_signals=True,
         )

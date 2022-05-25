@@ -4,17 +4,17 @@ Models for bulk email
 
 
 import logging
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 import markupsafe
 from config_models.models import ConfigurationModel
+from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.conf import settings
-
+from django.utils import timezone
 from opaque_keys.edx.django.models import CourseKeyField
 
+from common.djangoapps import course_modes
 from common.djangoapps.course_modes.models import CourseMode
 from common.djangoapps.student.roles import CourseInstructorRole, CourseStaffRole
 from common.djangoapps.util.keyword_substitution import substitute_keywords_with_data
@@ -125,7 +125,7 @@ class Target(models.Model):
         # filter out learners from the message who are no longer active in the course-run based on last login
         last_login_eligibility_period = settings.BULK_COURSE_EMAIL_LAST_LOGIN_ELIGIBILITY_PERIOD
         if last_login_eligibility_period and isinstance(last_login_eligibility_period, int):
-            cutoff = datetime.now() - relativedelta(months=last_login_eligibility_period)
+            cutoff = timezone.now() - relativedelta(months=last_login_eligibility_period)
             enrollment_qset = enrollment_qset.exclude(last_login__lte=cutoff)
 
         if self.target_type == SEND_TO_MYSELF:

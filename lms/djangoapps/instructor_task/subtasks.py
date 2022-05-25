@@ -6,7 +6,6 @@ This module contains celery task functions for handling the management of subtas
 import json
 import logging
 from contextlib import contextmanager
-from datetime import datetime
 from time import time
 from uuid import uuid4
 
@@ -14,10 +13,9 @@ import psutil
 from celery.states import READY_STATES, RETRY, SUCCESS
 from django.core.cache import cache
 from django.db import DatabaseError, transaction
-
+from django.utils import timezone
 
 from common.djangoapps.util.db import outer_atomic
-
 from .exceptions import DuplicateTaskException
 from .models import PROGRESS, QUEUING, InstructorTask
 
@@ -342,7 +340,7 @@ def queue_subtasks_for_query(
         new_subtask = create_subtask_fcn(item_list, subtask_status)
         TASK_LOG.info(
             "Queueing BulkEmail Task: %s Subtask: %s at timestamp: %s",
-            task_id, subtask_id, datetime.now()
+            task_id, subtask_id, timezone.now()
         )
         new_subtask.apply_async()
 

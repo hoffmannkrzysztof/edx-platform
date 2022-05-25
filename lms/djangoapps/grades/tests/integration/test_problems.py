@@ -91,7 +91,7 @@ class TestMultipleProblemTypesSubsectionScores(SharedModuleStoreTestCase):
             # Configure one block to return no possible score, the rest to return 3.0 earned / 7.0 possible
             block_count = self.SCORED_BLOCK_COUNT - 1
             mock_score.side_effect = itertools.chain(
-                [(earned_per_block, None, earned_per_block, None, datetime.datetime(2000, 1, 1))],
+                [(earned_per_block, None, earned_per_block, None, datetime.datetime(2000, 1, 1, tzinfo=pytz.utc))],
                 itertools.repeat(mock_score.return_value)
             )
             score = subsection_factory.update(self.seq1)
@@ -313,6 +313,6 @@ class TestWeightedProblems(SharedModuleStoreTestCase):
             weighted_possible=expected_w_possible,
             weight=weight,
             graded=expected_graded,
-            first_attempted=datetime.datetime(2010, 1, 1),
+            first_attempted=datetime.datetime(2010, 1, 1, tzinfo=pytz.utc),
         )
         self._verify_grades(raw_earned, raw_possible, weight, expected_score)

@@ -9,10 +9,10 @@ from unittest.mock import Mock, patch
 
 import ddt
 import pytest
-from django.test import RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from django.utils import timezone
 from edx_django_utils.cache import RequestCache
-from edx_toggles.toggles.testutils import override_waffle_flag
 from opaque_keys.edx.keys import CourseKey
 from pytz import UTC
 
@@ -27,7 +27,6 @@ from lms.djangoapps.discussion.django_comment_client.constants import TYPE_ENTRY
 from lms.djangoapps.discussion.django_comment_client.tests.factories import RoleFactory
 from lms.djangoapps.discussion.django_comment_client.tests.unicode import UnicodeTestMixin
 from lms.djangoapps.discussion.django_comment_client.tests.utils import config_course_discussions, topic_name_to_id
-from lms.djangoapps.discussion.toggles import ENABLE_DISCUSSIONS_MFE
 from lms.djangoapps.teams.tests.factories import CourseTeamFactory
 from openedx.core.djangoapps.course_groups import cohorts
 from openedx.core.djangoapps.course_groups.cohorts import set_course_cohorted
@@ -55,7 +54,6 @@ from xmodule.modulestore import ModuleStoreEnum
 from xmodule.modulestore.django import modulestore
 from xmodule.modulestore.tests.django_utils import TEST_DATA_MIXED_MODULESTORE, ModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory, ToyCourseFactory
-from xmodule.tabs import CourseTabList
 
 
 class DictionaryTestCase(TestCase):
@@ -677,7 +675,7 @@ class CategoryMapTestCase(CategoryMapTestMixin, ModuleStoreTestCase):
         assert set(subsection1['entries'].keys()) == subsection1_discussions
 
     def test_start_date_filter(self):
-        now = datetime.datetime.now()
+        now = timezone.now()
         self.create_discussion("Chapter 1", "Discussion 1", start=now)
         self.create_discussion("Chapter 1", "Discussion 2 обсуждение", start=self.later)
         self.create_discussion("Chapter 2", "Discussion", start=now)
@@ -720,7 +718,7 @@ class CategoryMapTestCase(CategoryMapTestMixin, ModuleStoreTestCase):
     def test_self_paced_start_date_filter(self):
         self.course.self_paced = True
 
-        now = datetime.datetime.now()
+        now = timezone.now()
         self.create_discussion("Chapter 1", "Discussion 1", start=now)
         self.create_discussion("Chapter 1", "Discussion 2", start=self.later)
         self.create_discussion("Chapter 2", "Discussion", start=now)

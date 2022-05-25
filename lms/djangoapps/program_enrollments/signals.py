@@ -4,16 +4,15 @@ Signal handlers for program enrollments
 
 
 import logging
-from datetime import datetime
 
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from social_django.models import UserSocialAuth
 
 from common.djangoapps.third_party_auth.models import SAMLProviderConfig
 from openedx.core.djangoapps.catalog.utils import get_programs
 from openedx.core.djangoapps.user_api.accounts.signals import USER_RETIRE_LMS_MISC
-
 from .api import fetch_program_enrollments_by_student, link_program_enrollment_to_lms_user
 from .models import ProgramEnrollment
 
@@ -49,7 +48,7 @@ def generate_default_display_name(self):
     """
     Returns a default display name for SamlProviderConfig.
     """
-    time = datetime.now().strftime('%M%S')
+    time = timezone.now().strftime('%M%S')
     return f'{self.slug}-{time}'
 
 
